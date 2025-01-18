@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_list_or_404
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView,DetailView, CreateView, UpdateView, DeleteView
 from .models import Post
@@ -15,7 +16,19 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog_app/home.html'
     context_object_name = 'posts'
+    paginate_by = 5
 
+#view that list posts by a user
+class UserPostListView(ListView):
+    model = Post
+    template_name = 'blog_app/user_post.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_query_set(self):
+        user = get_list_or_404(User, username = self.kwargs.get("username"))
+
+        
 class PostDetailView(DetailView):
     model = Post
 
